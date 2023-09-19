@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "eu-central-1"
-}
-
 data "aws_ec2_instance_types" "this" {
   filter {
     name   = "hypervisor"
@@ -24,12 +11,12 @@ data "aws_ec2_instance_types" "this" {
 
   filter {
     name   = "memory-info.size-in-mib"
-    values = ["2048"]
+    values = [var.memory]
   }
 
   filter {
     name   = "vcpu-info.default-vcpus"
-    values = ["2"]
+    values = [var.vcpus]
   }
 }
 
@@ -54,6 +41,8 @@ resource "aws_instance" "this" {
 
   ami           = data.aws_ami.ubuntu.id
   instance_type = each.key
+
+  depends_on = [null_resource.break]
 }
 
 resource "aws_spot_instance_request" "this" {
@@ -64,4 +53,13 @@ resource "aws_spot_instance_request" "this" {
 
   spot_type            = "one-time"
   wait_for_fulfillment = "true"
+
+  depends_on = [null_resource.break]
+}
+
+resource "null_resource" "break" {
+  provisioner "local-exec" {
+    ## It must fail to prevent creating EC2 instances
+    command = "false"
+  }
 }
