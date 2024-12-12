@@ -63,3 +63,7 @@ resource "null_resource" "break" {
     command = "false"
   }
 }
+
+output "instance_types" {
+  value = sort(data.aws_ec2_instance_types.this.instance_types)
+}
