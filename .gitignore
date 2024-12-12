@@ -3,6 +3,7 @@
 infracost-base.json
 plan.json
 tfplan.binary
+plan.html
 
 # Local .terraform directories
 .terraform
