@@ -6,12 +6,12 @@ data "aws_ec2_instance_types" "this" {
 
   filter {
     name   = "processor-info.supported-architecture"
-    values = ["x86_64"]
+    values = [var.arch]
   }
 
   filter {
     name   = "memory-info.size-in-mib"
-    values = [var.memory]
+    values = [var.memory * 1024]
   }
 
   filter {
